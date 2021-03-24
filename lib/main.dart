@@ -79,12 +79,16 @@ class _HomeState extends State<Home> {
       body: Container(
         child: Column(
           children: [
+            SizedBox(
+              height: 10.0,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 SizedBox(
                   width: 100,
                   child: DropdownButtonFormField(
+                    dropdownColor: Colors.blue[900],
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -106,6 +110,8 @@ class _HomeState extends State<Home> {
                 SizedBox(
                   width: 100,
                   child: DropdownButtonFormField(
+                    dropdownColor: Colors.blue[900],
+
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -150,25 +156,56 @@ class _HomeState extends State<Home> {
                         (events['$eventDay-$eventMonth-$year'] == null)
                             ? ''
                             : dateTime.split(" ")[0];
-                    return ListTile(
-                      onTap: () async {
-                        await Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return EventDetail(
-                              appointmentDate: '$eventDay-$eventMonth-$year',
-                              title: title,
-                              description: description,
-                              time: time);
-                        }));
-                        setState(() {});
-                      },
-                      title: Text(dateTime),
-                      subtitle: Text(title),
-                      leading: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                    return Container(
+                      child: Column(
                         children: [
-                          Text(eventDay.toString() ?? ''),
-                          Text(kMonthDropDown[month.toString()].toString()),
+                          ListTile(
+                            onTap: () async {
+                              await Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return EventDetail(
+                                    appointmentDate:
+                                        '$eventDay-$eventMonth-$year',
+                                    title: title,
+                                    description: description,
+                                    time: time);
+                              }));
+                              setState(() {});
+                            },
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(dateTime),
+                                SizedBox(
+                                  height: 5.0,
+                                ),
+                                Text(title),
+                              ],
+                            ),
+                            leading: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  eventDay.toString() ?? '',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                                Text(
+                                  kMonthDropDown[month.toString()].toString(),
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 250,
+                            child: Divider(
+                              thickness: 1.5,
+                            ),
+                          ),
                         ],
                       ),
                     );
@@ -231,6 +268,10 @@ class _EventDetailState extends State<EventDetail> {
         ),
       ),
       body: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: 10.0,
+          vertical: 10.0,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -252,8 +293,14 @@ class _EventDetailState extends State<EventDetail> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  width: 10.0,
+                ),
                 Text(widget.appointmentDate),
               ],
+            ),
+            SizedBox(
+              height: 10.0,
             ),
             Row(
               children: [
@@ -273,9 +320,15 @@ class _EventDetailState extends State<EventDetail> {
                 ),
               ],
             ),
+            SizedBox(
+              height: 10.0,
+            ),
             Text(
               'Description',
               textAlign: TextAlign.left,
+            ),
+            SizedBox(
+              height: 10.0,
             ),
             TextField(
               controller: _cDescription,
@@ -287,25 +340,27 @@ class _EventDetailState extends State<EventDetail> {
             Expanded(
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: size.width,
-                  height: 50,
-                  color: Colors.blue[900],
-                  child: GestureDetector(
-                    onTap: () {
-                      log('taped');
-                      var day = widget.appointmentDate.toString().split("-")[0];
-                      var month =
-                          widget.appointmentDate.toString().split("-")[1];
+                child: GestureDetector(
+                  onTap: () {
+                    log('taped');
+                    var day = widget.appointmentDate.toString().split("-")[0];
+                    var month = widget.appointmentDate.toString().split("-")[1];
 
-                      var year =
-                          widget.appointmentDate.toString().split("-")[2];
-
+                    var year = widget.appointmentDate.toString().split("-")[2];
+                    if (_cTitle.text.isNotEmpty &&
+                        _cTime.text.isNotEmpty &&
+                        _cDescription.text.isNotEmpty) {
                       events['$day-$month-$year'] =
                           '${_cTitle.text},${_cTime.text} ${widget.appointmentDate.toString()},${_cDescription.text}';
                       log(events.toString());
-                      Navigator.pop(context);
-                    },
+                    }
+
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: size.width,
+                    height: 50,
+                    color: Colors.blue[900],
                     child: Center(
                       child: Text(
                         'Save',
